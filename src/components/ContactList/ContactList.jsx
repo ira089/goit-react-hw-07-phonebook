@@ -1,29 +1,39 @@
-import { useSelector } from 'react-redux';
-import { getContacts, getFilter } from '../../redux/selectors';
+import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect } from 'react';
+import { getContacts, getFilter, getItem } from '../../redux/selectors';
+import { getContactsThunk } from '../../redux/operations';
+
 import styles from './ContactList.module.css';
 import ContactItems from '../ContactItems/ContactItems';
 
 const ContactList = () => {
-  const contactsState = useSelector(getContacts);
-  console.log(contactsState);
+  const { isLoading, error } = useSelector(getContacts);
+  const contacts = useSelector(getItem);
+  console.log(contacts);
+  // console.log(items);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getContactsThunk());
+  }, [dispatch]);
 
   const filterState = useSelector(getFilter);
   console.log(filterState);
 
   const getFilteredContacts = () => {
     if (!filterState) {
-      return contactsState;
+      return contacts;
     }
     const normalizedFilter = filterState.toLowerCase();
-    return contactsState.filter(contact =>
+    return contacts.filter(contact =>
       contact.name.toLocaleLowerCase().includes(normalizedFilter)
     );
   };
 
-  const items = getFilteredContacts();
-  console.log(items);
+  const itemsVisible = getFilteredContacts();
+  console.log(itemsVisible);
 
-  const elements = items.map(item => (
+  const elements = itemsVisible.map(item => (
     <ContactItems
       key={item.id}
       id={item.id}
@@ -31,7 +41,16 @@ const ContactList = () => {
       name={item.name}
     />
   ));
-  return <ul className={styles.list}>{elements}</ul>;
+
+  const isItemsVisible = Boolean(itemsVisible.length);
+
+  return (
+    <>
+      {isLoading && <p>...Loading</p>}
+      {error && <p>{error}</p>}
+      {isItemsVisible && <ul className={styles.list}>{elements}</ul>}
+    </>
+  );
 };
 
 export default ContactList;
