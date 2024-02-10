@@ -1,16 +1,18 @@
 import { useSelector, useDispatch } from 'react-redux';
 import React, { useEffect } from 'react';
-import { getContacts, getFilter, getItem } from '../../redux/selectors';
+import { getContacts, getFilter } from '../../redux/selectors';
 import { getContactsThunk } from '../../redux/operations';
 
 import styles from './ContactList.module.css';
 import ContactItems from '../ContactItems/ContactItems';
 
 const ContactList = () => {
-  const { isLoading, error } = useSelector(getContacts);
-  const contacts = useSelector(getItem);
-  console.log(contacts);
-  // console.log(items);
+  const { items, isLoading, error } = useSelector(getContacts);
+  // const contacts = useSelector(getItem);
+  // console.log(contacts);
+  // undefined
+  console.log(items);
+  // arr
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -22,22 +24,23 @@ const ContactList = () => {
 
   const getFilteredContacts = () => {
     if (!filterState) {
-      return contacts;
+      return items;
     }
     const normalizedFilter = filterState.toLowerCase();
-    return contacts.filter(contact =>
+    return items.filter(contact =>
       contact.name.toLocaleLowerCase().includes(normalizedFilter)
     );
   };
 
   const itemsVisible = getFilteredContacts();
   console.log(itemsVisible);
+  // Array
 
   const elements = itemsVisible.map(item => (
     <ContactItems
       key={item.id}
       id={item.id}
-      number={item.number}
+      phone={item.phone}
       name={item.name}
     />
   ));
@@ -47,7 +50,7 @@ const ContactList = () => {
   return (
     <>
       {isLoading && <p>...Loading</p>}
-      {error && <p>{error}</p>}
+      {error && <p>{error.message}</p>}
       {isItemsVisible && <ul className={styles.list}>{elements}</ul>}
     </>
   );

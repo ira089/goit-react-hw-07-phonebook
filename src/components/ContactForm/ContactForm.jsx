@@ -5,14 +5,15 @@ import { addContactsThunk } from '../../redux/operations';
 
 import { nanoid } from 'nanoid';
 import styles from './ContactForm.module.css';
-import { getItem } from '../../redux/selectors';
+import { getContacts } from '../../redux/selectors';
 
 const ContactForm = () => {
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [phone, setPhone] = useState('');
 
-  const items = useSelector(getItem);
+  const { items } = useSelector(getContacts);
   console.log(items);
+  // arr
   const dispatch = useDispatch();
 
   const handleChangeName = ({ target }) => {
@@ -22,27 +23,27 @@ const ContactForm = () => {
 
   const handleChangeNumber = ({ target }) => {
     const { value } = target;
-    setNumber(value);
+    setPhone(value);
   };
 
-  const isDublicate = evt => {
-    // console.log(evt);
-    const normalizedName = evt.toLowerCase();
-    const dublicate = items.find(
-      contact => contact.name.toLocaleLowerCase() === normalizedName
-    );
-    return dublicate;
-  };
+  // const isDublicate = evt => {
+  //   // console.log(evt);
+  //   const normalizedName = evt.toLowerCase();
+  //   const dublicate = items.find(
+  //     contact => contact.name.toLocaleLowerCase() === normalizedName
+  //   );
+  //   return dublicate;
+  // };
 
   const addTask = e => {
     e.preventDefault();
-    if (isDublicate(name)) {
-      console.log(name);
-      return alert(`${name} is already in contacts`);
-    }
-    dispatch(addContactsThunk({ name, number }));
+    // if (isDublicate(name)) {
+    //   console.log(name);
+    //   return alert(`${name} is already in contacts`);
+    // }
+    dispatch(addContactsThunk({ name, phone }));
     setName('');
-    setNumber('');
+    setPhone('');
   };
 
   const contactNameId = useMemo(() => nanoid(), []);
@@ -64,13 +65,13 @@ const ContactForm = () => {
       </label>
 
       <label htmlFor={contactNumberId} className={styles.formItem}>
-        Number
+        Phone
         <input
           onChange={handleChangeNumber}
-          value={number}
-          name="number"
+          value={phone}
+          name="phone"
           id={contactNumberId}
-          placeholder="Number"
+          placeholder="Phone"
           required
         ></input>
       </label>

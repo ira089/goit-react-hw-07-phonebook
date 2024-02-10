@@ -2,16 +2,17 @@ import { useDispatch } from 'react-redux';
 import { deleteContactsThunk } from '../../redux/operations';
 import styles from '../ContactList/ContactList.module.css';
 
-const ContactItems = ({ name, number, id }) => {
+const ContactItems = ({ name, phone, id }) => {
   const dispatch = useDispatch();
 
   const onDeleteContact = id => {
-    dispatch(deleteContactsThunk({ id }));
+    const numberId = Number(id);
+    dispatch(deleteContactsThunk(numberId));
   };
-
+  // console.log(typeof numberId);
   return (
     <li key={id} id={id}>
-      {name}: {number}{' '}
+      {name}: {phone}{' '}
       <button
         className={styles.btnDel}
         onClick={() => onDeleteContact(id)}
