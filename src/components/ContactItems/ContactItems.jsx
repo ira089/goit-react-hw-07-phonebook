@@ -9,7 +9,7 @@ const ContactItems = ({ name, phone, id }) => {
     const numberId = Number(id);
     dispatch(deleteContactsThunk(numberId));
   };
-  // console.log(typeof numberId);
+
   return (
     <li key={id} id={id}>
       {name}: {phone}{' '}

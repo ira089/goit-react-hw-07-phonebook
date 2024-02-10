@@ -1,54 +1,37 @@
 import { createSlice } from '@reduxjs/toolkit';
-// import { initialState } from './initialState';
 import {
   addContactsThunk,
   deleteContactsThunk,
   getContactsThunk,
 } from './operations';
-// import { persistReducer } from 'redux-persist';
-// import storage from 'redux-persist/lib/storage';
-// import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
-// import { nanoid } from 'nanoid';
-// const STATUS = {
-//   PENDING: 'pending',
-//   FULFILLED: 'fulfilled',
-//   REJECTED: 'rejected',
-// };
-
-// const arrThunks = [addContactsThunk, deleteContactsThunk, getContactsThunk];
-
-// const fnThunks = type => arrThunks.map(el => el[type]);
 
 const handlePending = state => {
   state.isLoading = true;
 };
 
-// const handleFulfilled = state => {
-//   state.isLoading = false;
-//   state.error = '';
-// };
-
-const handleFulfilledGet = (state, action) => {
+const handleFulfilled = state => {
   state.isLoading = false;
-  state.items = action.payload;
   state.error = null;
 };
 
-const handleFulfilledAdd = (state, action) => {
-  state.isLoading = false;
-  state.items.puch(action.payload);
-  state.error = null;
+const handleFulfilledGet = (state, { payload }) => {
+  handleFulfilled(state);
+  state.items = payload;
+};
+
+const handleFulfilledAdd = (state, { payload }) => {
+  handleFulfilled(state);
+  state.items.push(payload);
 };
 
 const handleFulfilledDel = (state, { payload }) => {
-  state.isLoading = false;
+  handleFulfilled(state);
   state.items = state.items.filter(el => el.id !== payload.id);
-  state.error = '';
 };
 
-const handleRejected = (state, action) => {
+const handleRejected = (state, { payload }) => {
   state.isLoading = false;
-  state.error = action.payload;
+  state.error = payload;
 };
 
 export const contactSlice = createSlice({
@@ -60,7 +43,6 @@ export const contactSlice = createSlice({
   },
 
   extraReducers: builder => {
-    // const { PENDING, FULFILLED, REJECTED } = STATUS;
     builder
       .addCase(getContactsThunk.pending, handlePending)
       .addCase(getContactsThunk.fulfilled, handleFulfilledGet)
@@ -71,9 +53,6 @@ export const contactSlice = createSlice({
       .addCase(deleteContactsThunk.pending, handlePending)
       .addCase(deleteContactsThunk.fulfilled, handleFulfilledDel)
       .addCase(deleteContactsThunk.rejected, handleRejected);
-    // .addMatcher(isAnyOf(...fnThunks(PENDING)), handlePending)
-    // .addMatcher(isAnyOf(...fnThunks(REJECTED)), handleRejected)
-    // .addMatcher(isAnyOf(...fnThunks(FULFILLED)), handleFulfilled);
   },
 });
 

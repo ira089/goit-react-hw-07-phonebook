@@ -1,18 +1,16 @@
 import { useState, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addContactsThunk } from '../../redux/operations';
-
 import { nanoid } from 'nanoid';
 import styles from './ContactForm.module.css';
-import { getContacts } from '../../redux/selectors';
+import { selectContacts } from '../../redux/selectors';
 
 const ContactForm = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
 
-  const { items } = useSelector(getContacts);
-  console.log(items);
+  const { items } = useSelector(selectContacts);
+  // console.log(items);
   // arr
   const dispatch = useDispatch();
 
@@ -26,21 +24,22 @@ const ContactForm = () => {
     setPhone(value);
   };
 
-  // const isDublicate = evt => {
-  //   // console.log(evt);
-  //   const normalizedName = evt.toLowerCase();
-  //   const dublicate = items.find(
-  //     contact => contact.name.toLocaleLowerCase() === normalizedName
-  //   );
-  //   return dublicate;
-  // };
+  const isDublicate = evt => {
+    // console.log(evt);
+    const normalizedName = evt.toLowerCase();
+    const dublicate = items.find(
+      contact => contact.name.toLocaleLowerCase() === normalizedName
+    );
+    return dublicate;
+  };
 
   const addTask = e => {
     e.preventDefault();
-    // if (isDublicate(name)) {
-    //   console.log(name);
-    //   return alert(`${name} is already in contacts`);
-    // }
+    if (isDublicate(name)) {
+      setName('');
+      setPhone('');
+      return alert(`${name} is already in contacts`);
+    }
     dispatch(addContactsThunk({ name, phone }));
     setName('');
     setPhone('');

@@ -40,7 +40,3 @@ export const deleteContactsThunk = createAsyncThunk(
     }
   }
 );
-
-// export const deleteContactsThunk = createAsyncThunk('contacts/delete', id =>
-//   requestDeleteContacts(id)
-// );

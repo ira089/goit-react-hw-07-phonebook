@@ -17,6 +17,6 @@ export const fetchContactsAdd = async body => {
 
 export const fetchContactsDelId = async id => {
   const { data } = await axios.delete(`${BASE_URL}/contacts/${id}`);
-  console.log(id);
+  // console.log(id);
   return data;
 };

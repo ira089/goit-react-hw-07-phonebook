@@ -1,39 +1,20 @@
 import { useSelector, useDispatch } from 'react-redux';
 import React, { useEffect } from 'react';
-import { getContacts, getFilter } from '../../redux/selectors';
+import { selectFilteredContacts, selectContacts } from '../../redux/selectors';
 import { getContactsThunk } from '../../redux/operations';
-
 import styles from './ContactList.module.css';
 import ContactItems from '../ContactItems/ContactItems';
 
 const ContactList = () => {
-  const { items, isLoading, error } = useSelector(getContacts);
-  // const contacts = useSelector(getItem);
-  // console.log(contacts);
-  // undefined
-  console.log(items);
-  // arr
+  const { isLoading, error } = useSelector(selectContacts);
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getContactsThunk());
   }, [dispatch]);
 
-  const filterState = useSelector(getFilter);
-  console.log(filterState);
-
-  const getFilteredContacts = () => {
-    if (!filterState) {
-      return items;
-    }
-    const normalizedFilter = filterState.toLowerCase();
-    return items.filter(contact =>
-      contact.name.toLocaleLowerCase().includes(normalizedFilter)
-    );
-  };
-
-  const itemsVisible = getFilteredContacts();
-  console.log(itemsVisible);
+  const itemsVisible = useSelector(selectFilteredContacts);
+  // console.log(itemsVisible);
   // Array
 
   const elements = itemsVisible.map(item => (
